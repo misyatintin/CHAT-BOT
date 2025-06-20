@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Chatbot</title>
+    <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+<body>
+    <div class="dashboard">
+        <header>
+            <h1>Create New Chatbot</h1>
+            <a href="/dashboard/index.html">Back to Dashboard</a>
+        </header>
+        <main>
+            <section class="create-bot">
+                <form id="createBotForm">
+                    <input type="text" name="name" placeholder="Chatbot Name" required>
+                    <textarea name="description" placeholder="Description"></textarea>
+                    <input type="url" name="websiteUrl" placeholder="Website URL">
+                    <input type ="file" accept="pdf" name="pdfFile" placeholder="Upload PDF">
+                    <button type="submit">Create Chatbot</button>
+                </form>
+            </section>
+        </main>
+    </div>
+    <script src="/js/dashboard.js"></script>
+</body>
+</html>

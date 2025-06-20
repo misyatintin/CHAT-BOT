@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chatbot Dashboard</title>
+    <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+<body>
+    <div class="dashboard">
+        <header>
+            <h1>AI Chatbot Dashboard</h1>
+            <button onclick="logout()">Logout</button>
+        </header>
+
+        <main>
+<section class="create-bot">
+    <h2>Create New Chatbot</h2>
+    <form id="createBotForm">
+        <input type="text" name="name" placeholder="Domain Name" required>
+        <textarea name="description" placeholder="Description"></textarea>
+        <input type="url" name="websiteUrl" placeholder="Website URL">
+        <button type="submit">Create Chatbot</button>
+    </form>
+    
+    <!-- Document Upload Section (shows after bot creation) -->
+    <div id="documentUploadSection" style="display: none;">
+        <h3>Add Documents to Your Chatbot</h3>
+        
+        <!-- PDF Upload -->
+        <div class="upload-section">
+            <h4>Upload PDF</h4>
+            <form id="pdfUploadForm" enctype="multipart/form-data">
+                <input type="file" name="pdf" accept=".pdf" required>
+                <button type="submit">Upload PDF</button>
+            </form>
+        </div>
+        
+        <!-- Link/URL Input -->
+        <div class="upload-section">
+            <h4>Add Website Link</h4>
+            <form id="linkAddForm">
+                <input type="url" name="url" placeholder="Enter website URL" required>
+                <button type="submit">Add Link</button>
+            </form>
+        </div>
+        
+        <div id="uploadStatus"></div>
+    </div>
+</section>
+
+            <section class="bot-list">
+                <h2>Your Chatbots</h2>
+                <div id="chatbotList"></div>
+            </section>
+        </main>
+    </div>
+
+    <script src="/js/dashboard.js"></script>
+
+</body>
+</html>
