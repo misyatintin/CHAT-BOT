@@ -286,8 +286,122 @@ function setupDocumentUpload() {
         e.preventDefault();
         await addLink(e.target);
     });
+
+    // Q&A Add Form Handler
+    document.getElementById('qaAddForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        await addQA(e.target);
+    });
+
+    // Bulk Q&A Upload Form Handler
+    document.getElementById('bulkQaForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        await uploadBulkQA(e.target);
+    });
 }
 
+async function addQA(form) {
+    const formData = new FormData(form);
+    const question = formData.get('question');
+    const answer = formData.get('answer');
+
+    showUploadStatus('Adding Q&A pair...', 'processing');
+
+    try {
+        const response = await fetch('/api/qa/add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            },
+            body: JSON.stringify({
+                chatbotId: currentChatbotId,
+                question: question,
+                answer: answer
+            })
+        });
+
+        const data = await response.json();
+        if (data.success) {
+            showUploadStatus('Q&A pair added successfully!', 'success');
+            form.reset();
+        } else {
+            showUploadStatus(`Error: ${data.error}`, 'error');
+        }
+    } catch (error) {
+        console.error('Add Q&A error:', error);
+        showUploadStatus('Failed to add Q&A pair', 'error');
+    }
+}
+
+async function uploadBulkQA(form) {
+    const formData = new FormData(form);
+    const file = formData.get('qaFile');
+
+    if (!file) {
+        showUploadStatus('Please select a CSV file', 'error');
+        return;
+    }
+
+    showUploadStatus('Processing CSV file...', 'processing');
+
+    try {
+        // Read and parse CSV file
+        const csvText = await file.text();
+        const qaEntries = parseCSVToQA(csvText);
+
+        if (qaEntries.length === 0) {
+            showUploadStatus('No valid Q&A pairs found in CSV', 'error');
+            return;
+        }
+
+        const response = await fetch('/api/qa/bulk-add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            },
+            body: JSON.stringify({
+                chatbotId: currentChatbotId,
+                qaEntries: qaEntries
+            })
+        });
+
+        const data = await response.json();
+        if (data.success) {
+            showUploadStatus(data.message, 'success');
+            form.reset();
+        } else {
+            showUploadStatus(`Error: ${data.error}`, 'error');
+        }
+    } catch (error) {
+        console.error('Bulk Q&A upload error:', error);
+        showUploadStatus('Failed to upload Q&A CSV', 'error');
+    }
+}
+
+function parseCSVToQA(csvText) {
+    const lines = csvText.split('\n');
+    const qaEntries = [];
+
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+        if (!line) continue;
+
+        // Simple CSV parsing (handles basic cases)
+        const parts = line.split(',');
+        if (parts.length >= 2) {
+            const question = parts[0].trim().replace(/^["']|["']$/g, '');
+            const answer = parts.slice(1).join(',').trim().replace(/^["']|["']$/g, '');
+            
+            if (question && answer) {
+                qaEntries.push({ question, answer });
+            }
+        }
+    }
+
+    return qaEntries;
+}
 async function uploadPDF(form) {
     const formData = new FormData(form);
     formData.append('chatbotId', currentChatbotId);
@@ -368,5 +482,5 @@ function showUploadStatus(message, type) {
 function logout() {
     localStorage.removeItem('token');
     localStorage.removeItem('refreshToken');
-    window.location.href = 'views/auth/login.html';
+    window.location.href = '/login';  // Correct path to match your app.js routes
 }

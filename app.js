@@ -15,6 +15,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/auth', require('./routes/auth'));
 app.use('/api/chatbot', require('./routes/chatbot'));
 app.use('/api/document', require('./routes/document'));
+app.use('/api/qa', require('./routes/qa')); 
 app.use('/embed', require('./routes/embed'));
 
 // HTML Page Routes

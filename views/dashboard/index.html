@@ -44,7 +44,25 @@
                 <button type="submit">Add Link</button>
             </form>
         </div>
+        <!-- Q&A Input -->
+        <div class="upload-section">
+            <h4>Add Q&A Pairs</h4>
+            <form id="qaAddForm">
+                <input type="text" name="question" placeholder="Enter question" required>
+                <textarea name="answer" placeholder="Enter answer" required rows="3"></textarea>
+                <button type="submit">Add Q&A</button>
+            </form>
+        </div>
         
+        <!-- Bulk Q&A Upload -->
+        <div class="upload-section">
+            <h4>Bulk Upload Q&A (CSV)</h4>
+            <form id="bulkQaForm" enctype="multipart/form-data">
+                <input type="file" name="qaFile" accept=".csv" required>
+                <small>CSV format: question,answer (one pair per row)</small>
+                <button type="submit">Upload Q&A CSV</button>
+            </form>
+        </div>
         <div id="uploadStatus"></div>
     </div>
 </section>
@@ -57,6 +75,14 @@
     </div>
 
     <script src="/js/dashboard.js"></script>
-
+<script>
+(function() {
+    var script = document.createElement('script');
+    script.src = 'http://localhost:3001/embed/chatbot.js';
+    script.setAttribute('data-chatbot-id', '13');
+    script.async = true;
+    document.head.appendChild(script);
+})();
+</script>
 </body>
 </html>

@@ -135,3 +135,22 @@ button[type="submit"] {
     color: #856404;
     border: 1px solid #ffeaa7;
 }
+
+
+
+
+.upload-section small {
+    display: block;
+    color: #666;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+.upload-section textarea {
+    resize: vertical;
+    min-height: 60px;
+}
+
+.upload-section form {
+    margin-bottom: 0;
+}

@@ -60,8 +60,8 @@ class ChatbotController {
 
             const context = documents.map(doc => doc.processed_content).join('\n\n');
             
-            // Generate AI response
-            const response = await aiProcessor.generateResponse(context, message);
+            // Generate AI response with chatbot ID for Q&A integration      
+           const response = await aiProcessor.generateResponse(context, message, chatbotId);
 
             // Save conversation
             await db.execute(

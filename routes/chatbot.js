@@ -260,8 +260,8 @@ router.post('/chat', authenticateChatbot, async (req, res) => {
             context = 'No specific context available. Please provide general helpful responses.';
         }
 
-        // Generate AI response
-        const response = await aiProcessor.generateResponse(context, message.trim());
+        // Generate AI response with Q&A integration
+        const response = await aiProcessor.generateResponse(context, message.trim(), chatbotId);
         const responseTime = Date.now() - startTime;
 
         // Save conversation
@@ -284,6 +284,64 @@ router.post('/chat', authenticateChatbot, async (req, res) => {
         });
     }
 });
+
+
+
+
+
+
+router.get('/:id', authenticateToken, async (req, res) => {
+    try {
+        const chatbotId = req.params.id;
+        const userId = req.user.id;
+
+        const chatbots = await executeQuery(
+            'SELECT * FROM chatbots WHERE id = ? AND user_id = ?',
+            [chatbotId, userId]
+        );
+
+        if (chatbots.length === 0) {
+            return res.status(404).json({ error: 'Chatbot not found' });
+        }
+
+        // Get documents for this chatbot
+        const documents = await executeQuery(
+            'SELECT id, type, source_url, original_name, status, created_at FROM documents WHERE chatbot_id = ?',
+            [chatbotId]
+        );
+
+        // Get recent conversations
+        const conversations = await executeQuery(
+            'SELECT user_message, bot_response, created_at FROM conversations WHERE chatbot_id = ? ORDER BY created_at DESC LIMIT 10',
+            [chatbotId]
+        );
+
+        // Get Q&A count
+        const [qaCount] = await executeQuery(
+            'SELECT COUNT(*) as count FROM chatbot_qa WHERE chatbot_id = ? AND is_active = 1',
+            [chatbotId]
+        );
+
+        res.json({
+            success: true,
+            chatbot: {
+                ...chatbots[0],
+                documents,
+                recentConversations: conversations,
+                qaCount: qaCount.count
+            }
+        });
+
+    } catch (error) {
+        console.error('Get chatbot error:', error);
+        res.status(500).json({ error: 'Failed to fetch chatbot details' });
+    }
+});
+
+
+
+
+
 
 // Get chatbot analytics
 router.get('/:id/analytics', authenticateToken, async (req, res) => {
